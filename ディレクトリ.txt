@@ -1,0 +1,23 @@
+rekitabi-app/
+├── app/
+│   ├── api/
+│   │   └── spots/
+│   │       └── route.ts
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── globals.css
+├── components/
+│   ├── MapView.tsx
+│   ├── MapInner.tsx
+│   ├── StampGrid.tsx
+│   ├── BottomNav.tsx
+│   └── DetailModal.tsx
+├── public/
+│   └── data/
+│       └── spots/
+│           ├── kanto.json
+│           └── kansai.json
+├── types/
+│   └── spot.ts
+├── tailwind.config.js
+└── package.json
