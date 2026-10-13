@@ -163,7 +163,11 @@ export default function RekitabiApp() {
               <option value="kansai">関西エリア</option>
             </select>
           </div>
-          <MapView spots={spots} onSelectSpot={(spot) => setModalSpot(spot)} />
+          <MapView
+            spots={spots}
+            userStamps={userStamps}
+            onSelectSpot={(spot) => setModalSpot(spot)}
+          />
         </div>
       )}
 

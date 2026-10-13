@@ -1,10 +1,17 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { LiffProvider } from '@/components/LiffProvider';
 
 export const metadata: Metadata = {
   title: '歴たび - 全国パワースポットめぐり & 参拝帳',
   description: '社寺霊場巡礼スタンプラリーと参拝記録手帳',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({

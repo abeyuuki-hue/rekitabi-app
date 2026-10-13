@@ -10,11 +10,21 @@ export interface ShrineSpot {
   stampName: string;
   history: string;
   gourmet: string;
+  desc?: string;
+  deity?: string;
+  benefits?: string[];
+  sanpaiTime?: string;
+  sanpaiPoint?: string;
   // Sanpai integration fields
   enshrinedDeities?: string[];
   blessings?: string[];
   etiquetteNotes?: string;
   officialUrl?: string;
+}
+
+export interface RegionOption {
+  key: RegionKey;
+  label: string;
 }
 
 export interface SanpaiRecord {
