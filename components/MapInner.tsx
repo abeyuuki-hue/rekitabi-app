@@ -55,19 +55,26 @@ export default function MapInner({ spots, userStamps = {}, onSelectSpot }: MapIn
           iconAnchor: [15, 30],
         });
 
-        const statusLabel = isStamped
-          ? '<span style="color:#8B0000; font-weight:bold;">💮 参拝・押印済</span>'
-          : '<span style="color:#666;">未参拝</span>';
-
         const popupContent = document.createElement('div');
         popupContent.style.minWidth = '140px';
         popupContent.style.textAlign = 'center';
         popupContent.style.fontFamily = 'serif';
-        popupContent.innerHTML = `
-          <div style="font-size:14px; font-weight:bold; color:#8B0000; margin-bottom:4px;">${spot.name}</div>
-          <div style="font-size:11px; color:#555; margin-bottom:4px;">${spot.region} (${spot.prefecture})</div>
-          <div style="font-size:11px; margin-bottom:8px;">${statusLabel}</div>
-        `;
+
+        const title = document.createElement('div');
+        title.textContent = spot.name;
+        title.style.cssText = 'font-size:14px; font-weight:bold; color:#8B0000; margin-bottom:4px;';
+        popupContent.appendChild(title);
+
+        const location = document.createElement('div');
+        location.textContent = `${spot.region} (${spot.prefecture})`;
+        location.style.cssText = 'font-size:11px; color:#555; margin-bottom:4px;';
+        popupContent.appendChild(location);
+
+        const status = document.createElement('div');
+        status.textContent = isStamped ? '💮 参拝・押印済' : '未参拝';
+        status.style.cssText = `font-size:11px; margin-bottom:8px; color:${isStamped ? '#8B0000' : '#666'};`;
+        if (isStamped) status.style.fontWeight = 'bold';
+        popupContent.appendChild(status);
 
         if (onSelectSpot) {
           const btn = document.createElement('button');

@@ -10,8 +10,22 @@
     "history": "1900年以上の歴史を誇る古社。境内の木造洋式灯台は県指定文化財。",
     "gourmet": "名物：本町通りの和菓子＆地元クラフトビール",
     "deity": "天照皇大神",
-    "benefits": ["開運招福", "海上安全", "厄除け"],
-    "sanpaiTime": "開門 6:00〜17:00"
+    "benefits": [
+      "開運招福",
+      "海上安全",
+      "厄除け"
+    ],
+    "sanpaiTime": "開門 6:00〜17:00",
+    "enshrinedDeities": [
+      "天照皇大御神"
+    ],
+    "blessings": [
+      "所願成就",
+      "海上安全",
+      "家内安全"
+    ],
+    "etiquetteNotes": "参道正面の鳥居で一礼し、手水舎で身を清めてから本殿へ。",
+    "officialUrl": "http://www.oohikoushin.jp/"
   },
   {
     "id": "kanda",
@@ -24,8 +38,25 @@
     "history": "天平2年(730年)創建。江戸のすべてを守護する江戸総鎮守。",
     "gourmet": "名物：明神甘酒＆EDOCCOカフェスイーツ",
     "deity": "大己貴命・少彦名命・平将門命",
-    "benefits": ["商売繁盛", "縁結び", "除災厄除"],
-    "sanpaiTime": "境内 24時間参拝可能（授与所 9:00〜18:00）"
+    "benefits": [
+      "商売繁盛",
+      "縁結び",
+      "除災厄除"
+    ],
+    "sanpaiTime": "境内 24時間参拝可能（授与所 9:00〜18:00）",
+    "enshrinedDeities": [
+      "大己貴命",
+      "少彦名命",
+      "平将門命"
+    ],
+    "blessings": [
+      "縁結び",
+      "商売繁盛",
+      "除災厄除",
+      "勝運"
+    ],
+    "etiquetteNotes": "随神門をくぐる前に一礼。二礼二拍手一礼で真摯にお参りください。",
+    "officialUrl": "https://www.kandamyoujin.or.jp/"
   },
   {
     "id": "koami",
@@ -38,7 +69,23 @@
     "history": "強運厄除けと銭洗い弁天で非常に有名な下町の社。",
     "gourmet": "名物：人形町の人形焼・どら焼き",
     "deity": "倉稲魂神・市杵島姫命・福禄寿",
-    "benefits": ["強運厄除", "財運向上", "銭洗い弁天"],
-    "sanpaiTime": "開門 9:00〜17:00"
+    "benefits": [
+      "強運厄除",
+      "財運向上",
+      "銭洗い弁天"
+    ],
+    "sanpaiTime": "開門 9:00〜17:00",
+    "enshrinedDeities": [
+      "倉稲魂神",
+      "市杵島姫命",
+      "福禄寿"
+    ],
+    "blessings": [
+      "強運厄除",
+      "金運向上",
+      "銭洗い"
+    ],
+    "etiquetteNotes": "銭洗いの井で金銭を清め、清めたお金は種銭として財布に大切に収めます。",
+    "officialUrl": "https://www.koamijinja.or.jp/"
   }
 ]

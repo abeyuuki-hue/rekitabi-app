@@ -15,15 +15,26 @@ export interface ShrineSpot {
   benefits?: string[];
   sanpaiTime?: string;
   sanpaiPoint?: string;
-}
-
-export interface SanpaiRecord {
-  spotId: string;
-  stampedAt: string;
-  note?: string;
+  // Sanpai integration fields
+  enshrinedDeities?: string[];
+  blessings?: string[];
+  etiquetteNotes?: string;
+  officialUrl?: string;
 }
 
 export interface RegionOption {
   key: RegionKey;
   label: string;
+}
+
+export interface SanpaiRecord {
+  id: string;
+  spotId: string;
+  spotName: string;
+  visitedAt: string;
+  weather?: string;
+  prayer?: string;
+  notes?: string;
+  photos?: string[];
+  rating?: number;
 }
