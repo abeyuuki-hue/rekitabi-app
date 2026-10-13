@@ -92,7 +92,7 @@ export default function RekitabiApp() {
             liff.sendMessages([
               {
                 type: 'text',
-                text: `⛩️ 【歴たび】${spot.name}（${spot.prefecture}）の御朱印を獲得しました！\n印銘：${spot.stampName.replace('\n', ' ')}`,
+                text: `⛩️ 【歴たび】${spot.name}（${spot.prefecture}）の御朱印を獲得しました！\n印銘：${spot.stampName.replaceAll('\n', ' ')}`,
               },
             ]).catch(() => {});
           }

@@ -49,7 +49,7 @@ export default function MapInner({ spots, onSelectSpot }: MapInnerProps) {
 
       spots.forEach((spot) => {
         const marker = L.marker([spot.lat, spot.lng], { icon: shrineIcon })
-          .bindPopup(`<b>${spot.name}</b><br>${spot.region} (${spot.prefecture})<br><span style="font-size:11px;color:#8B0000;">印銘: ${spot.stampName.replace('\n', ' ')}</span>`);
+          .bindPopup(`<b>${spot.name}</b><br>${spot.region} (${spot.prefecture})<br><span style="font-size:11px;color:#8B0000;">印銘: ${spot.stampName.replaceAll('\n', ' ')}</span>`);
 
         if (onSelectSpot) {
           marker.on('click', () => onSelectSpot(spot));

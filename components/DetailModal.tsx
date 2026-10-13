@@ -61,7 +61,7 @@ export default function DetailModal({
           </button>
           <span className="text-[10px] text-amber-200 tracking-wider">📍 {spot.prefecture}・{spot.region}</span>
           <h2 className="text-lg font-bold tracking-wide mt-0.5">⛩️ {spot.name}</h2>
-          <p className="text-xs text-amber-100/90 mt-0.5">印銘：{spot.stampName.replace('\n', ' ')}</p>
+          <p className="text-xs text-amber-100/90 mt-0.5">印銘：{spot.stampName.replaceAll('\n', ' ')}</p>
         </div>
 
         {/* モーダルタブ切り替え */}
