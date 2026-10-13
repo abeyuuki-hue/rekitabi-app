@@ -1,0 +1,75 @@
+[
+  {
+    "id": "fushimi_inari",
+    "name": "伏見稲荷大社",
+    "region": "関西",
+    "prefecture": "京都府",
+    "lat": 34.9671,
+    "lng": 135.7727,
+    "stampName": "千本鳥居\n(伏見印)",
+    "history": "和銅4年(711年)創建。全国に約3万社ある稲荷神社の総本宮。朱色の千本鳥居が連なる神域。",
+    "gourmet": "名物：伏見稲荷のきつねうどん＆すずめの香ばし焼き",
+    "enshrinedDeities": [
+      "宇迦之御魂大神",
+      "佐田彦大神",
+      "大宮能売大神"
+    ],
+    "blessings": [
+      "商売繁盛",
+      "五穀豊穣",
+      "家内安全",
+      "諸願成就"
+    ],
+    "etiquetteNotes": "千本鳥居を巡るお山巡りでは、道中の神蹟やお塚にも感謝の誠を捧げます。",
+    "officialUrl": "http://inari.jp/"
+  },
+  {
+    "id": "yasaka",
+    "name": "八坂神社",
+    "region": "関西",
+    "prefecture": "京都府",
+    "lat": 35.0037,
+    "lng": 135.7785,
+    "stampName": "祇園総鎮守\n(八坂印)",
+    "history": "全国の祇園社の総本社で「祇園さん」と親しまれる。千百余年の歴史を誇る祇園祭で名高い。",
+    "gourmet": "名物：祇園辻利の抹茶甘味＆ちご餅",
+    "enshrinedDeities": [
+      "素戔嗚尊",
+      "櫛稲田姫命",
+      "八柱御子神"
+    ],
+    "blessings": [
+      "厄除け",
+      "無病息災",
+      "美徳向上",
+      "良縁成就"
+    ],
+    "etiquetteNotes": "境内末社の美御前社（うつくしごぜんしゃ）の御神水は、美肌祈願として有名です。",
+    "officialUrl": "https://www.yasaka-jinja.or.jp/"
+  },
+  {
+    "id": "sumiyoshi",
+    "name": "住吉大社",
+    "region": "関西",
+    "prefecture": "大阪府",
+    "lat": 34.6125,
+    "lng": 135.4935,
+    "stampName": "摂津国一之宮\n(住吉印)",
+    "history": "全国約2300社ある住吉神社の総本社。反橋（太鼓橋）と住吉造の本殿4棟は国宝指定。",
+    "gourmet": "名物：住吉名物初辰焼き＆さつま焼き",
+    "enshrinedDeities": [
+      "底筒男命",
+      "中筒男命",
+      "表筒男命",
+      "息長足姫命"
+    ],
+    "blessings": [
+      "航海安全",
+      "商売繁盛",
+      "厄除け",
+      "心願成就"
+    ],
+    "etiquetteNotes": "急勾配の反橋（太鼓橋）を渡ることで、罪や穢れを祓い清めて神前に進みます。",
+    "officialUrl": "https://www.sumiyoshitaisha.net/"
+  }
+]

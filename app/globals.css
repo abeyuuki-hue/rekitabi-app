@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 40, 40, 40;
+  --background-rgb: 253, 251, 247;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+  -webkit-font-smoothing: antialiased;
+}
