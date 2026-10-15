@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShrineSpot, RegionKey, REGION_OPTIONS, StampRallyCourse } from '@/types/spot';
+import { ShrineSpot, RegionKey, REGION_OPTIONS, PREFECTURE_ORDER, StampRallyCourse } from '@/types/spot';
 
 interface StampGridProps {
   spots: ShrineSpot[];
@@ -29,23 +29,39 @@ export default function StampGrid({
   onOpenDetail,
 }: StampGridProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedPrefecture, setSelectedPrefecture] = useState<string>('all');
   const [showCoursesPanel, setShowCoursesPanel] = useState(true);
 
   const selectedCourse = courses.find((c) => c.course_id === selectedCourseId) || null;
 
-  // Filter spots by course (if selected) and search query
-  const baseSpots = selectedCourse
+  // Filter spots by course (if selected)
+  const regionOrCourseSpots = selectedCourse
     ? allSpots.filter((s) => selectedCourse.spot_ids.includes(s.id))
     : spots;
+
+  // Available prefectures within the current region/course selection, ordered North-to-South
+  const prefectureCounts = regionOrCourseSpots.reduce<Record<string, number>>((acc, s) => {
+    acc[s.prefecture] = (acc[s.prefecture] || 0) + 1;
+    return acc;
+  }, {});
+  const availablePrefectures = Object.keys(prefectureCounts).sort(
+    (a, b) => PREFECTURE_ORDER.indexOf(a) - PREFECTURE_ORDER.indexOf(b)
+  );
+
+  const baseSpots =
+    selectedPrefecture !== 'all' && prefectureCounts[selectedPrefecture]
+      ? regionOrCourseSpots.filter((s) => s.prefecture === selectedPrefecture)
+      : regionOrCourseSpots;
 
   const filteredSpots = baseSpots.filter((spot) => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.trim().toLowerCase();
     const matchName = spot.name.toLowerCase().includes(q);
     const matchPref = spot.prefecture.toLowerCase().includes(q);
+    const matchLocation = (spot.location || '').toLowerCase().includes(q);
     const matchDeity = (spot.deity || '').toLowerCase().includes(q);
     const matchBlessings = (spot.blessings || []).some((b) => b.toLowerCase().includes(q));
-    return matchName || matchPref || matchDeity || matchBlessings;
+    return matchName || matchPref || matchLocation || matchDeity || matchBlessings;
   });
 
   const stampedCount = baseSpots.filter((s) => userStamps[s.id]).length;
@@ -56,22 +72,22 @@ export default function StampGrid({
       {/* 全国総合進捗バナー */}
       <div className="bg-gradient-to-r from-shrine-darkred to-red-900 text-white rounded-xl p-3 shadow-md border border-shrine-gold/40">
         <div className="flex justify-between items-center text-xs">
-          <span className="font-bold text-amber-200">🗾 全国パワースポット制覇状況</span>
+          <span className="font-bold text-amber-200">🗾 全国47都道府県パワースポット制覇状況</span>
           <span className="font-bold">
-            <span className="text-base text-amber-300">{totalNationwideStamped}</span> / {allSpots.length || 53} 社寺
+            <span className="text-base text-amber-300">{totalNationwideStamped}</span> / {allSpots.length || 191} 社寺
           </span>
         </div>
         <div className="w-full bg-black/30 h-2 rounded-full mt-1.5 overflow-hidden">
           <div
             className="bg-amber-400 h-full rounded-full transition-all duration-500"
             style={{
-              width: `${Math.min(100, Math.round((totalNationwideStamped / Math.max(1, allSpots.length || 53)) * 100))}%`,
+              width: `${Math.min(100, Math.round((totalNationwideStamped / Math.max(1, allSpots.length || 191)) * 100))}%`,
             }}
           />
         </div>
       </div>
 
-      {/* 5大テーマ別スタンプラリーコース */}
+      {/* テーマ＆エリア別スタンプラリーコース */}
       {courses.length > 0 && (
         <div className="bg-white rounded-xl border border-amber-900/15 shadow-sm overflow-hidden">
           <button
@@ -79,7 +95,7 @@ export default function StampGrid({
             onClick={() => setShowCoursesPanel(!showCoursesPanel)}
             className="w-full px-3 py-2.5 bg-amber-50/70 flex justify-between items-center text-xs font-bold text-stone-800 border-b border-amber-900/10"
           >
-            <span>🏆 5大テーマ別スタンプラリーコース（称号獲得）</span>
+            <span>🏆 全{courses.length}コース！スタンプラリー（称号獲得）</span>
             <span className="text-[10px] text-shrine-darkred">{showCoursesPanel ? '▲ 閉じる' : '▼ コースを選ぶ'}</span>
           </button>
 
@@ -88,7 +104,10 @@ export default function StampGrid({
               {selectedCourseId && (
                 <button
                   type="button"
-                  onClick={() => onCourseChange(null)}
+                  onClick={() => {
+                    onCourseChange(null);
+                    setSelectedPrefecture('all');
+                  }}
                   className="w-full py-1 text-[11px] font-bold text-shrine-darkred bg-red-50 border border-shrine-darkred/30 rounded-lg"
                 >
                   ✕ コース絞り込みを解除して地域一覧に戻る
@@ -103,9 +122,10 @@ export default function StampGrid({
                     <button
                       key={course.course_id}
                       type="button"
-                      onClick={() =>
-                        onCourseChange(isSelected ? null : course.course_id)
-                      }
+                      onClick={() => {
+                        setSelectedPrefecture('all');
+                        onCourseChange(isSelected ? null : course.course_id);
+                      }}
                       className={`min-w-[210px] text-left p-2.5 rounded-lg border-2 transition-all shrink-0 ${
                         isSelected
                           ? 'border-shrine-darkred bg-red-50/40 shadow-sm'
@@ -115,10 +135,10 @@ export default function StampGrid({
                       }`}
                     >
                       <div className="flex justify-between items-center gap-1">
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-shrine-darkred/10 text-shrine-darkred">
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-shrine-darkred/10 text-shrine-darkred line-clamp-1">
                           {course.theme}
                         </span>
-                        <span className="text-[10px] font-bold text-stone-600">
+                        <span className="text-[10px] font-bold text-stone-600 shrink-0">
                           {doneCount}/{course.spot_ids.length}社
                         </span>
                       </div>
@@ -162,27 +182,49 @@ export default function StampGrid({
         </div>
       )}
 
-      {/* 地域選択 ＆ キーワード検索 */}
+      {/* 地域選択・都道府県絞り込み・キーワード検索 */}
       <div className="bg-white p-3 rounded-xl border border-stone-200 shadow-sm space-y-2">
-        <div className="flex items-center gap-2">
-          <label htmlFor="region-select" className="text-xs font-bold whitespace-nowrap text-stone-700">
-            地域選択：
-          </label>
-          <select
-            id="region-select"
-            value={selectedRegion}
-            onChange={(e) => {
-              onCourseChange(null);
-              onRegionChange(e.target.value as RegionKey);
-            }}
-            className="w-full bg-stone-50 border border-stone-300 rounded px-2 py-1.5 text-xs font-bold text-stone-800 focus:outline-none focus:border-shrine-darkred"
-          >
-            {REGION_OPTIONS.map((r) => (
-              <option key={r.key} value={r.key}>
-                {r.label}
-              </option>
-            ))}
-          </select>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div className="flex items-center gap-1.5">
+            <label htmlFor="region-select" className="text-xs font-bold whitespace-nowrap text-stone-700">
+              地域：
+            </label>
+            <select
+              id="region-select"
+              value={selectedRegion}
+              onChange={(e) => {
+                onCourseChange(null);
+                setSelectedPrefecture('all');
+                onRegionChange(e.target.value as RegionKey);
+              }}
+              className="w-full bg-stone-50 border border-stone-300 rounded px-2 py-1.5 text-xs font-bold text-stone-800 focus:outline-none focus:border-shrine-darkred"
+            >
+              {REGION_OPTIONS.map((r) => (
+                <option key={r.key} value={r.key}>
+                  {r.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <label htmlFor="pref-select" className="text-xs font-bold whitespace-nowrap text-stone-700">
+              都道府県：
+            </label>
+            <select
+              id="pref-select"
+              value={selectedPrefecture}
+              onChange={(e) => setSelectedPrefecture(e.target.value)}
+              className="w-full bg-stone-50 border border-stone-300 rounded px-2 py-1.5 text-xs font-bold text-stone-800 focus:outline-none focus:border-shrine-darkred"
+            >
+              <option value="all">すべての都道府県（{availablePrefectures.length}都道府県）</option>
+              {availablePrefectures.map((pref) => (
+                <option key={pref} value={pref}>
+                  {pref}（{prefectureCounts[pref]}社寺）
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="relative">
@@ -190,7 +232,7 @@ export default function StampGrid({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="🔍 社寺名・都道府県・ご利益（金運、縁結び等）で検索..."
+            placeholder="🔍 社寺名・都道府県・ご利益（金運、縁結び、一宮等）で検索..."
             className="w-full bg-stone-50 border border-stone-300 rounded-lg px-3 py-1.5 text-xs text-stone-800 focus:outline-none focus:border-shrine-darkred"
           />
           {searchQuery && (
@@ -210,10 +252,12 @@ export default function StampGrid({
         <span>
           {selectedCourse
             ? `コース内獲得スタンプ:`
+            : selectedPrefecture !== 'all'
+            ? `${selectedPrefecture} 獲得スタンプ:`
             : `表示エリア獲得スタンプ (${REGION_OPTIONS.find((r) => r.key === selectedRegion)?.shortLabel || ''}):`}
         </span>
         <span className="font-bold">
-          <span className="text-shrine-darkred text-base">{stampedCount}</span> / {baseSpots.length} 社
+          <span className="text-shrine-darkred text-base">{stampedCount}</span> / {baseSpots.length} 社寺
         </span>
       </div>
 

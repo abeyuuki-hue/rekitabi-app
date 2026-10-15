@@ -1,5 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { EXTRA_HOKKAIDO_TOHOKU } from './regions/hokkaido_tohoku.mjs';
+import { EXTRA_KANTO } from './regions/kanto.mjs';
+import { EXTRA_CHUBU_HOKURIKU } from './regions/chubu_hokuriku.mjs';
+import { EXTRA_KANSAI } from './regions/kansai.mjs';
+import { EXTRA_CHUGOKU_SHIKOKU } from './regions/chugoku_shikoku.mjs';
+import { EXTRA_KYUSHU_OKINAWA } from './regions/kyushu_okinawa.mjs';
 
 const rawV2 = JSON.parse(fs.readFileSync(path.resolve('power_spots_japan-v2.json'), 'utf-8'));
 
@@ -541,6 +547,47 @@ for (const region of rawV2.regions) {
     }
   }
 
+  const EXTRA_REGIONAL_MODULES = {
+    hokkaido_tohoku: EXTRA_HOKKAIDO_TOHOKU,
+    kanto: EXTRA_KANTO,
+    chubu_hokuriku: EXTRA_CHUBU_HOKURIKU,
+    kansai: EXTRA_KANSAI,
+    chugoku: EXTRA_CHUGOKU_SHIKOKU.filter((s) => s.regionKey === 'chugoku'),
+    shikoku: EXTRA_CHUGOKU_SHIKOKU.filter((s) => s.regionKey === 'shikoku'),
+    kyushu_okinawa: EXTRA_KYUSHU_OKINAWA
+  };
+
+  if (EXTRA_REGIONAL_MODULES[regionKey]) {
+    for (const item of EXTRA_REGIONAL_MODULES[regionKey]) {
+      const deitiesList = item.enshrinedDeities || item.deities || (item.deity ? item.deity.split(/[・、]/).map((d) => d.trim()).filter(Boolean) : []);
+      const blessingsList = item.blessings || item.benefits || [];
+      const inferredType = item.type || (/(寺|観音|大師|院)/.test(item.name) && !item.name.includes('神社') && !item.name.includes('神宮') ? '寺院' : /(峠|御嶽|渓谷|滝)/.test(item.name) && !item.name.includes('神社') ? '自然聖地' : '神社');
+      const normalized = {
+        id: item.id,
+        name: item.name,
+        type: inferredType,
+        region: regionName,
+        regionKey,
+        prefecture: item.prefecture,
+        location: item.area || item.location || item.prefecture,
+        lat: item.lat,
+        lng: item.lng,
+        stampName: item.stampName,
+        history: item.history,
+        gourmet: item.gourmet,
+        deity: item.deity || deitiesList.join('・'),
+        benefits: blessingsList,
+        sanpaiTime: item.sanpaiTime,
+        enshrinedDeities: deitiesList,
+        blessings: blessingsList,
+        etiquetteNotes: item.etiquetteNotes,
+        officialUrl: item.officialUrl
+      };
+      regionSpots.push(normalized);
+      allSpots.push(normalized);
+    }
+  }
+
   fs.writeFileSync(
     path.join(outDir, `${regionKey}.json`),
     JSON.stringify(regionSpots, null, 2) + '\n',
@@ -556,10 +603,113 @@ fs.writeFileSync(
 );
 console.log(`Wrote all.json (${allSpots.length} total spots)`);
 
+const spotNameMap = Object.fromEntries(allSpots.map((s) => [s.id, s.name]));
+
+const EXTRA_COURSES = [
+  {
+    course_id: 'COURSE-006',
+    title: '東国三社巡り＆常陸・下総開運ルート',
+    theme: '武運・道開き・東国鎮護',
+    target_audience: '勝負事・新規事業・人生の転機を迎える方、関東の歴史探訪ファン',
+    recommended_duration: '1日〜1泊2日のドライブ・鉄道周遊',
+    spot_ids: ['KT-010', 'KT-009', 'KT-028', 'KT-029', 'KT-027'],
+    description: '江戸時代には「お伊勢参り」に並ぶ聖地巡礼として親しまれた鹿島神宮・香取神宮・息栖神社の「東国三社」に、筑波山神社・大洗磯前神社を加えた関東屈指の開運コース。',
+    completion_reward: {
+      digital_badge: '東国三社大麻デジタルスタンプ',
+      title: '東国開運の導き手'
+    }
+  },
+  {
+    course_id: 'COURSE-007',
+    title: '江戸・東京 五大開運＆出世名社巡り',
+    theme: '出世・強運・商売繁盛・良縁',
+    target_audience: '都内で日帰り参拝したい方、キャリアアップ・金運・良縁を願う方',
+    recommended_duration: '都内1日メトロ・JR周遊',
+    spot_ids: ['KT-001', 'KT-003', 'KT-013', 'KT-014', 'KT-005', 'KT-015'],
+    description: '明治神宮・神田明神・浅草寺・日枝神社・小網神社・愛宕神社（出世の石段）など、江戸総鎮守から強運厄除・出世開運まで東京の中心を巡る王道コース。',
+    completion_reward: {
+      digital_badge: '江戸総鎮守・出世開運スタンプ',
+      title: '江戸開運マイスター'
+    }
+  },
+  {
+    course_id: 'COURSE-008',
+    title: '古都京都・奈良 千年王城鎮護＆世界遺産巡拝',
+    theme: '王城鎮護・厄除け・縁結び・歴史文化',
+    target_audience: '京都・奈良の社寺建築や国宝・世界遺産を深く味わいたい方',
+    recommended_duration: '2泊3日の京都・奈良周遊',
+    spot_ids: ['KS-001', 'KS-019', 'KS-020', 'KS-021', 'KS-006', 'KS-007', 'KS-025'],
+    description: '伏見稲荷大社・下鴨神社・上賀茂神社・八坂神社から、奈良の大神神社・春日大社・東大寺まで、千年の都を守り続けた名社・大寺を巡る王道コース。',
+    completion_reward: {
+      digital_badge: '千年古都・王城鎮護スタンプ',
+      title: '古都巡礼の雅人'
+    }
+  },
+  {
+    course_id: 'COURSE-009',
+    title: '出雲・美保両参り＆山陰神話の聖地ルート',
+    theme: '究極の縁結び・えびすだいこく両参り・八雲神話',
+    target_audience: '出雲神話の世界を体感したい方、ご縁と商売繁盛の両方を願う方',
+    recommended_duration: '1泊2日〜2泊3日の山陰周遊',
+    spot_ids: ['CG-001', 'CG-008', 'CG-009', 'CG-010', 'CG-011', 'CG-005'],
+    description: '出雲大社（だいこく様）と美保神社（えびす様）の「両参り」を中心に、八重垣神社・熊野大社・日御碕神社・白兎神社まで神話の舞台を巡る特別コース。',
+    completion_reward: {
+      digital_badge: 'えびすだいこく両参り満願スタンプ',
+      title: '八雲神話の結び手'
+    }
+  },
+  {
+    course_id: 'COURSE-010',
+    title: '四国四県 一宮・金刀比羅＆遍路名刹コース',
+    theme: '海上安全・厄除け・お遍路発心・心身再生',
+    target_audience: '四国一周・瀬戸内旅を楽しむ方、一生に一度の金比羅参り・お遍路体験をしたい方',
+    recommended_duration: '2泊3日〜3泊4日の四国周遊',
+    spot_ids: ['SK-001', 'SK-005', 'SK-008', 'SK-002', 'SK-010', 'SK-013'],
+    description: '阿波一宮・大麻比古神社と霊山寺（一番札所）、讃岐の金刀比羅宮と善通寺、伊予の大山祇神社・石鎚神社、土佐一宮・土佐神社を網羅する四国グランドコース。',
+    completion_reward: {
+      digital_badge: '四国四州・遍路一宮スタンプ',
+      title: '四国巡拝の同行者'
+    }
+  },
+  {
+    course_id: 'COURSE-011',
+    title: '九州神話・天孫降臨と火の国・琉球聖地ルート',
+    theme: '日本神話の源流・天孫降臨・開運厄除',
+    target_audience: '高千穂・霧島・宗像・宇佐など日本神話のルーツと琉球王国の聖地を巡りたい方',
+    recommended_duration: '九州・沖縄エリア別周遊',
+    spot_ids: ['KO-001', 'KO-007', 'KO-002', 'KO-016', 'KO-004', 'KO-024', 'KO-006'],
+    description: '太宰府天満宮・宗像大社・宇佐神宮から阿蘇神社、高千穂・天岩戸、霧島神宮、沖縄の斎場御嶽・波上宮まで、南日本の大いなる神話と自然崇拝を体感するコース。',
+    completion_reward: {
+      digital_badge: '天孫降臨・日向神話スタンプ',
+      title: '神話源流の探求者'
+    }
+  },
+  {
+    course_id: 'COURSE-012',
+    title: 'みちのく霊場・東北六県一宮＆平泉黄金ルート',
+    theme: '奥州鎮護・不老長寿・霊山修行・黄金文化',
+    target_audience: '東北の雄大な自然と歴史・一宮・世界遺産平泉を巡りたい方',
+    recommended_duration: '東北新幹線・レンタカー周遊',
+    spot_ids: ['HT-009', 'HT-003', 'HT-004', 'HT-005', 'HT-017', 'HT-020'],
+    description: '津軽一宮・岩木山神社、世界遺産・中尊寺金色堂、陸奥一宮・鹽竈神社、出羽三山神社、秋田一宮・古四王神社、陸奥一宮・伊佐須美神社を結ぶ東北6県制覇コース。',
+    completion_reward: {
+      digital_badge: 'みちのく六州・黄金鎮護スタンプ',
+      title: '奥州霊場マスター'
+    }
+  }
+].map((c) => ({
+  ...c,
+  total_spots: c.spot_ids.length,
+  spot_names: c.spot_ids.map((id) => spotNameMap[id] || id)
+}));
+
+const allCourses = [...rawV2.stamp_rally_courses, ...EXTRA_COURSES];
+
 const coursesOut = path.resolve('public/data/courses.json');
 fs.writeFileSync(
   coursesOut,
-  JSON.stringify(rawV2.stamp_rally_courses, null, 2) + '\n',
+  JSON.stringify(allCourses, null, 2) + '\n',
   'utf-8'
 );
-console.log(`Wrote courses.json (${rawV2.stamp_rally_courses.length} courses)`);
+console.log(`Wrote courses.json (${allCourses.length} courses)`);
+

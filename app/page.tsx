@@ -211,7 +211,9 @@ export default function RekitabiApp() {
             {profile ? (
               <p className="text-[10px] text-amber-200">巡礼者: {profile.displayName} 様</p>
             ) : (
-              <p className="text-[10px] text-amber-100/80">全国7地域53社寺・5大スタンプラリーコース</p>
+              <p className="text-[10px] text-amber-100/80">
+                全国47都道府県・{allSpots.length || 191}社寺＆{courses.length || 12}大スタンプラリー
+              </p>
             )}
           </div>
           <button

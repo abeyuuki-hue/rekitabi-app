@@ -26,13 +26,16 @@ test('All 7 region spot data files, all.json, and courses.json exist and are val
   const coursesPath = path.resolve('public/data/courses.json');
   assert.ok(fs.existsSync(coursesPath), 'courses.json must exist');
   const courses = JSON.parse(fs.readFileSync(coursesPath, 'utf-8'));
-  assert.equal(courses.length, 5, 'Should have 5 stamp rally courses');
+  assert.equal(courses.length, 12, 'Should have 12 stamp rally courses');
 });
 
-test('Spot data entries have required fields, unique IDs, and valid Japan coordinates', () => {
+test('Spot data entries have required fields, unique IDs, all 47 prefectures, and valid Japan coordinates', () => {
   const allPath = path.resolve('public/data/spots/all.json');
   const allSpots = JSON.parse(fs.readFileSync(allPath, 'utf-8'));
-  assert.ok(allSpots.length >= 49, `Expected at least 49 spots, got ${allSpots.length}`);
+  assert.ok(allSpots.length >= 191, `Expected at least 191 spots, got ${allSpots.length}`);
+
+  const prefectures = new Set(allSpots.map((s) => s.prefecture));
+  assert.equal(prefectures.size, 47, `Expected all 47 prefectures, got ${prefectures.size}`);
 
   const ids = new Set();
 
