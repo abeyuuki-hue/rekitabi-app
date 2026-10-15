@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import { ShrineSpot, RegionKey, REGION_OPTIONS, PREFECTURE_ORDER, StampRallyCourse } from '@/types/spot';
+import { DEFAULT_HOME_SPOT_ID, getDeityCharacterForSpot } from '@/lib/story_data';
+import { getVisualStyleEmoji } from './DeityAvatarSvg';
 
 interface StampGridProps {
   spots: ShrineSpot[];
@@ -14,6 +16,13 @@ interface StampGridProps {
   userStamps: Record<string, boolean>;
   onCheckIn: (spot: ShrineSpot) => void;
   onOpenDetail: (spot: ShrineSpot) => void;
+  homeSpotId?: string;
+  goshuinPhotos?: Record<string, string>;
+  unofferedShinryoku?: number;
+  offeredShinryoku?: number;
+  onGoToHomeShrine?: () => void;
+  testMode?: boolean;
+  onBulkStampSpots?: (spotsToStamp: ShrineSpot[], label: string) => void;
 }
 
 export default function StampGrid({
@@ -27,12 +36,21 @@ export default function StampGrid({
   userStamps,
   onCheckIn,
   onOpenDetail,
+  homeSpotId = DEFAULT_HOME_SPOT_ID,
+  goshuinPhotos = {},
+  unofferedShinryoku = 0,
+  offeredShinryoku = 0,
+  onGoToHomeShrine,
+  testMode = false,
+  onBulkStampSpots,
 }: StampGridProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPrefecture, setSelectedPrefecture] = useState<string>('all');
   const [showCoursesPanel, setShowCoursesPanel] = useState(true);
 
   const selectedCourse = courses.find((c) => c.course_id === selectedCourseId) || null;
+  const homeSpot = allSpots.find((s) => s.id === homeSpotId) || allSpots.find((s) => s.id === DEFAULT_HOME_SPOT_ID) || allSpots[0];
+  const homeChar = homeSpot ? getDeityCharacterForSpot(homeSpot) : null;
 
   // Filter spots by course (if selected)
   const regionOrCourseSpots = selectedCourse
@@ -85,6 +103,41 @@ export default function StampGrid({
             }}
           />
         </div>
+
+        {/* ホーム（本宮）＆神力ミニステータスバー */}
+        {homeSpot && homeChar && (
+          <div className="mt-2.5 pt-2 border-t border-white/15 flex items-center justify-between gap-2">
+            <div className="text-[11px] leading-snug">
+              <div className="flex items-center gap-1 font-bold text-amber-200">
+                <span>🏮 本宮：{homeSpot.name}</span>
+                <span className="text-[10px] text-amber-100/80">
+                  （{getVisualStyleEmoji(homeChar.visualStyle)} {homeChar.charaName}）
+                </span>
+              </div>
+              <div className="text-[10px] text-amber-100/90 mt-0.5">
+                本宮神力：<strong className="text-amber-300">{offeredShinryoku.toLocaleString()}</strong>
+                {unofferedShinryoku > 0 && (
+                  <span className="ml-1.5 px-1.5 py-0.5 rounded-full bg-amber-400 text-stone-950 font-bold">
+                    未献上 +{unofferedShinryoku}
+                  </span>
+                )}
+              </div>
+            </div>
+            {onGoToHomeShrine && (
+              <button
+                type="button"
+                onClick={onGoToHomeShrine}
+                className={`px-2.5 py-1.5 rounded-lg text-[10px] font-bold shrink-0 transition-all shadow-xs ${
+                  unofferedShinryoku > 0
+                    ? 'bg-amber-400 hover:bg-amber-300 text-stone-950 animate-pulse'
+                    : 'bg-white/15 hover:bg-white/25 text-white border border-white/25'
+                }`}
+              >
+                {unofferedShinryoku > 0 ? '✨ 本宮へ神力献上' : '🏮 本宮・神力へ'}
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* テーマ＆エリア別スタンプラリーコース */}
@@ -247,8 +300,8 @@ export default function StampGrid({
         </div>
       </div>
 
-      {/* 表示中エリアの獲得スタンプ進捗 */}
-      <div className="bg-white border border-amber-900/10 rounded-xl p-3 shadow-sm text-xs text-neutral-600 flex justify-between items-center">
+      {/* 表示中エリアの獲得スタンプ進捗 ＆ テストモード時の一括獲得ショートカット */}
+      <div className="bg-white border border-amber-900/10 rounded-xl p-3 shadow-sm text-xs text-neutral-600 flex flex-wrap justify-between items-center gap-2">
         <span>
           {selectedCourse
             ? `コース内獲得スタンプ:`
@@ -256,30 +309,72 @@ export default function StampGrid({
             ? `${selectedPrefecture} 獲得スタンプ:`
             : `表示エリア獲得スタンプ (${REGION_OPTIONS.find((r) => r.key === selectedRegion)?.shortLabel || ''}):`}
         </span>
-        <span className="font-bold">
-          <span className="text-shrine-darkred text-base">{stampedCount}</span> / {baseSpots.length} 社寺
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="font-bold">
+            <span className="text-shrine-darkred text-base">{stampedCount}</span> / {baseSpots.length} 社寺
+          </span>
+          {testMode && onBulkStampSpots && stampedCount < baseSpots.length && (
+            <button
+              type="button"
+              onClick={() =>
+                onBulkStampSpots(
+                  baseSpots,
+                  selectedCourse
+                    ? selectedCourse.title
+                    : selectedPrefecture !== 'all'
+                    ? selectedPrefecture
+                    : REGION_OPTIONS.find((r) => r.key === selectedRegion)?.shortLabel || '表示中エリア'
+                )
+              }
+              className="px-2.5 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold text-[10px] shadow-xs"
+            >
+              ⚡ 表示中の{baseSpots.length}社を一括獲得
+            </button>
+          )}
+        </div>
       </div>
 
       {/* スタンプ台帳グリッド */}
       <div className="grid grid-cols-2 gap-3">
         {filteredSpots.map((spot) => {
           const isStamped = !!userStamps[spot.id];
+          const isHome = spot.id === homeSpotId;
+          const hasPhoto = !!goshuinPhotos[spot.id];
+
           return (
             <div
               key={spot.id}
-              className={`bg-white rounded-xl p-3 text-center border-2 transition-all flex flex-col justify-between ${
-                isStamped ? 'border-shrine-darkred bg-orange-50/20 shadow-sm' : 'border-dashed border-stone-300'
+              className={`bg-white rounded-xl p-3 text-center border-2 transition-all flex flex-col justify-between relative ${
+                isHome
+                  ? 'border-amber-500 bg-amber-50/30 shadow-md ring-1 ring-amber-400/50'
+                  : isStamped
+                  ? 'border-shrine-darkred bg-orange-50/20 shadow-sm'
+                  : 'border-dashed border-stone-300'
               }`}
             >
               <div>
-                <div className="flex justify-between items-center text-[10px] text-stone-500">
-                  <span>📍 {spot.prefecture}</span>
-                  {spot.type && (
-                    <span className="px-1.5 py-0.2 bg-stone-100 rounded text-[9px] font-bold text-stone-600">
-                      {spot.type}
-                    </span>
-                  )}
+                <div className="flex justify-between items-center text-[10px] text-stone-500 gap-1">
+                  <span className="truncate">📍 {spot.prefecture}</span>
+                  <div className="flex items-center gap-1 shrink-0">
+                    {isHome && (
+                      <span className="px-1.5 py-0.2 bg-amber-400 text-stone-950 rounded text-[9px] font-bold">
+                        🏮本宮
+                      </span>
+                    )}
+                    {hasPhoto && (
+                      <span
+                        className="px-1 py-0.2 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded text-[9px] font-bold"
+                        title="実物の御朱印写真が保存されています"
+                      >
+                        📷実物
+                      </span>
+                    )}
+                    {!isHome && !hasPhoto && spot.type && (
+                      <span className="px-1.5 py-0.2 bg-stone-100 rounded text-[9px] font-bold text-stone-600">
+                        {spot.type}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <h3 className="font-bold text-xs mt-1 line-clamp-1 text-stone-800" title={spot.name}>
                   {spot.name}
@@ -291,16 +386,29 @@ export default function StampGrid({
                 )}
               </div>
 
-              {/* 御朱印印影 */}
+              {/* 御朱印印影（または実物御朱印サムネイル重畳） */}
               <div
                 onClick={() => onOpenDetail(spot)}
-                className={`w-16 h-16 border-2 border-shrine-darkred rounded-full mx-auto my-2 flex flex-col items-center justify-center text-[9px] font-bold leading-tight cursor-pointer transition-transform ${
+                className={`w-16 h-16 border-2 border-shrine-darkred rounded-full mx-auto my-2 flex flex-col items-center justify-center text-[9px] font-bold leading-tight cursor-pointer transition-transform relative overflow-hidden ${
                   isStamped
                     ? 'opacity-100 text-shrine-darkred -rotate-6 scale-105 bg-red-50/40 shadow-inner'
                     : 'opacity-25 text-stone-400 hover:opacity-40'
                 }`}
               >
-                {isStamped ? (
+                {hasPhoto ? (
+                  <>
+                    <img
+                      src={goshuinPhotos[spot.id]}
+                      alt={spot.name}
+                      className="absolute inset-0 w-full h-full object-cover opacity-35"
+                    />
+                    <div className="relative z-10 bg-white/80 px-1 rounded text-[8px] text-shrine-darkred font-extrabold">
+                      {spot.stampName.split('\n').map((line, i) => (
+                        <div key={i}>{line}</div>
+                      ))}
+                    </div>
+                  </>
+                ) : isStamped ? (
                   spot.stampName.split('\n').map((line, i) => <div key={i}>{line}</div>)
                 ) : (
                   '未押印'
@@ -316,14 +424,14 @@ export default function StampGrid({
                     isStamped ? 'bg-stone-600 hover:bg-stone-700' : 'bg-shrine-darkred hover:bg-red-900'
                   }`}
                 >
-                  {isStamped ? '📜 由緒確認' : '📍 押印 (GPS)'}
+                  {isStamped ? '📜 由緒・実物写真' : '📍 押印 (+100神力)'}
                 </button>
                 <button
                   type="button"
                   onClick={() => onOpenDetail(spot)}
                   className="w-full py-1 rounded text-[10px] font-bold text-stone-600 border border-stone-300 hover:bg-stone-50"
                 >
-                  詳細・参拝記録
+                  📷 御朱印撮影・本宮・記録
                 </button>
               </div>
             </div>

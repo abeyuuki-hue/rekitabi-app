@@ -55,6 +55,9 @@ test('Spot data entries have required fields, unique IDs, all 47 prefectures, an
     assert.ok(spot.history, `Spot ${spot.id} must have a history`);
   }
 
+  // Default Home Spot Funabashi Daijingu ('funabashi') must exist
+  assert.ok(ids.has('funabashi'), 'Default home spot funabashi (船橋大神宮) must exist in all.json');
+
   // Verify all course spot_ids exist in all.json
   const courses = JSON.parse(fs.readFileSync(path.resolve('public/data/courses.json'), 'utf-8'));
   for (const course of courses) {
@@ -63,6 +66,58 @@ test('Spot data entries have required fields, unique IDs, all 47 prefectures, an
     for (const sid of course.spot_ids) {
       assert.ok(ids.has(sid), `Course ${course.course_id} references unknown spot_id ${sid}`);
     }
+  }
+});
+
+test('Story data, 17 zones, 17 bookmarks, 10-step Fuji animation, and stealth marketing rules are verified', () => {
+  const storyDataPath = path.resolve('lib/story_data.ts');
+  assert.ok(fs.existsSync(storyDataPath), 'lib/story_data.ts must exist');
+  const storyContent = fs.readFileSync(storyDataPath, 'utf-8');
+
+  // Default home spot is funabashi
+  assert.ok(
+    storyContent.includes("DEFAULT_HOME_SPOT_ID = 'funabashi'"),
+    'Default home spot ID must be funabashi'
+  );
+
+  // 3 Story scenarios exist
+  assert.ok(storyContent.includes("id: 'scenario_1'"), 'Scenario 1 must exist');
+  assert.ok(storyContent.includes("id: 'scenario_2'"), 'Scenario 2 must exist');
+  assert.ok(storyContent.includes("id: 'scenario_3'"), 'Scenario 3 must exist');
+
+  // 17 Japan zones (ZONE-01 to ZONE-17)
+  for (let i = 1; i <= 17; i++) {
+    const zId = `ZONE-${String(i).padStart(2, '0')}`;
+    assert.ok(storyContent.includes(zId), `Zone ${zId} must be defined`);
+  }
+
+  // 17 Sacred Bookmarks (BOOKMARK-01 to BOOKMARK-17)
+  for (let i = 1; i <= 17; i++) {
+    const bId = `BOOKMARK-${String(i).padStart(2, '0')}`;
+    assert.ok(storyContent.includes(bId), `Bookmark ${bId} must be defined`);
+  }
+
+  // Required deity quote in 10-step animation
+  assert.ok(
+    storyContent.includes('神には神の法則（すじみち）があるように、人には人の法則（すじみち）があるようだな'),
+    'Required deity sujimichi quote must be included in story_data.ts'
+  );
+
+  // Stealth marketing verification: UI strings (excluding developer comments) must not expose raw textbook/organization names
+  const uiFiles = [
+    'lib/story_data.ts',
+    'components/HomeShrineView.tsx',
+    'components/ZoneClearFujiModal.tsx',
+    'components/DetailModal.tsx',
+  ];
+  for (const relPath of uiFiles) {
+    const rawContent = fs.readFileSync(path.resolve(relPath), 'utf-8');
+    const codeOnly = rawContent
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/\/\/.*$/gm, '');
+    assert.ok(!codeOnly.includes('万人幸福の栞'), `${relPath} UI strings must not explicitly expose 万人幸福の栞`);
+    assert.ok(!codeOnly.includes('丸山敏雄'), `${relPath} UI strings must not explicitly expose 丸山敏雄`);
+    assert.ok(!codeOnly.includes('倫理法人会'), `${relPath} UI strings must not explicitly expose 倫理法人会`);
   }
 });
 
