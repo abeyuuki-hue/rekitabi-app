@@ -1,0 +1,202 @@
+[
+  {
+    "id": "HT-001",
+    "name": "北海道神宮",
+    "type": "神社",
+    "region": "北海道・東北",
+    "regionKey": "hokkaido_tohoku",
+    "prefecture": "北海道",
+    "location": "札幌市中央区宮ヶ丘474",
+    "lat": 43.0545,
+    "lng": 141.3077,
+    "stampName": "蝦夷国新一の宮\n(北海道神宮印)",
+    "history": "北海道の開拓・発展を見守る総鎮守。円山の豊かな自然に囲まれた北海道屈指のパワースポット。",
+    "gourmet": "名物：境内の六花亭「判官さま（焼きたて蕎麦餅）」＆神宮茶屋の福レ餅",
+    "deity": "大国魂神・大那牟遲神・少彦名神・明治天皇",
+    "benefits": [
+      "金運上昇",
+      "商売繁盛",
+      "縁結び",
+      "開拓成就"
+    ],
+    "sanpaiTime": "開門 6:00〜17:00（季節により変動）",
+    "enshrinedDeities": [
+      "大国魂神",
+      "大那牟遲神",
+      "少彦名神",
+      "明治天皇"
+    ],
+    "blessings": [
+      "金運上昇",
+      "商売繁盛",
+      "縁結び",
+      "開拓成就"
+    ],
+    "etiquetteNotes": "第二鳥居は「縁切りの鳥居」とも呼ばれるため、良縁祈願の方は第三鳥居（公園口鳥居）からの参拝が吉とされています。",
+    "officialUrl": "http://www.hokkaidojingu.or.jp/"
+  },
+  {
+    "id": "HT-002",
+    "name": "恐山菩提寺",
+    "type": "寺院",
+    "region": "北海道・東北",
+    "regionKey": "hokkaido_tohoku",
+    "prefecture": "青森県",
+    "location": "むつ市田名部宇曽利山3-2",
+    "lat": 41.3204,
+    "lng": 141.0879,
+    "stampName": "日本三大霊場\n(恐山延命地蔵印)",
+    "history": "日本三大霊場の一つ。火山岩が広がる地獄と宇曽利山湖の極楽浜が対照的な神秘の聖地。",
+    "gourmet": "名物：蓮華庵の恐山そば・下北名物みそ貝焼き",
+    "deity": "延命地蔵菩薩",
+    "benefits": [
+      "亡者供養",
+      "心身浄化",
+      "家内安全"
+    ],
+    "sanpaiTime": "開山期間 5月1日〜10月31日（6:00〜18:00）",
+    "enshrinedDeities": [
+      "延命地蔵菩薩"
+    ],
+    "blessings": [
+      "亡者供養",
+      "心身浄化",
+      "家内安全"
+    ],
+    "etiquetteNotes": "境内の霊泉（冷抜の湯・古滝の湯など）で心身を清めてからお参りすることもできます。石積みの崩落にご注意ください。",
+    "officialUrl": "https://osorezan.or.jp/"
+  },
+  {
+    "id": "HT-003",
+    "name": "岩木山神社",
+    "type": "神社",
+    "region": "北海道・東北",
+    "regionKey": "hokkaido_tohoku",
+    "prefecture": "青森県",
+    "location": "弘前市百沢字寺沢27",
+    "lat": 40.6231,
+    "lng": 140.335,
+    "stampName": "津軽国一宮\n(岩木山大権現印)",
+    "history": "「お岩木さま」と親しまれる津軽国一の宮。岩木山をご神体と仰ぎ強い生命力を授ける。",
+    "gourmet": "名物：門前の嶽きみ（とうもろこし）天ぷら＆津軽アップルパイ",
+    "deity": "顕國魂神・多都比姫神",
+    "benefits": [
+      "津軽開運",
+      "五穀豊穣",
+      "縁結び",
+      "金運"
+    ],
+    "sanpaiTime": "境内参拝自由（授与所 8:30〜17:00）",
+    "enshrinedDeities": [
+      "顕國魂神",
+      "多都比姫神"
+    ],
+    "blessings": [
+      "津軽開運",
+      "五穀豊穣",
+      "縁結び",
+      "金運"
+    ],
+    "etiquetteNotes": "楼門脇の狛犬は上向き（金運）と下向き（恋愛運）で異なるご利益があると伝わります。",
+    "officialUrl": "http://iwakiyamajinja.or.jp/"
+  },
+  {
+    "id": "HT-004",
+    "name": "鹽竈神社",
+    "type": "神社",
+    "region": "北海道・東北",
+    "regionKey": "hokkaido_tohoku",
+    "prefecture": "宮城県",
+    "location": "塩竈市一森山1-1",
+    "lat": 38.3189,
+    "lng": 141.0125,
+    "stampName": "陸奥国一宮\n(鹽竈大神印)",
+    "history": "陸奥国一の宮として格式高い古社。塩製造を伝えた塩土老翁神を祀り、浄化と導きのパワーを持つ。",
+    "gourmet": "名物：門前の志波彦神社門前菓子「志ほがま」＆塩釜港の極上寿司",
+    "deity": "鹽土老翁神・武甕槌神・経津主神",
+    "benefits": [
+      "安産守護",
+      "延命長寿",
+      "海上安全",
+      "交通安全"
+    ],
+    "sanpaiTime": "開門 5:00〜20:00（季節により変動）",
+    "enshrinedDeities": [
+      "鹽土老翁神",
+      "武甕槌神",
+      "経津主神"
+    ],
+    "blessings": [
+      "安産守護",
+      "延命長寿",
+      "海上安全",
+      "交通安全"
+    ],
+    "etiquetteNotes": "202段の表参道（男坂）を登り、別宮→左宮・右宮の順にお参りするのが正式な参拝順序です。",
+    "officialUrl": "http://www.shiogamajinja.jp/"
+  },
+  {
+    "id": "HT-005",
+    "name": "出羽三山神社（羽黒山）",
+    "type": "神社",
+    "region": "北海道・東北",
+    "regionKey": "hokkaido_tohoku",
+    "prefecture": "山形県",
+    "location": "鶴岡市羽黒町手向7",
+    "lat": 38.7044,
+    "lng": 140.0156,
+    "stampName": "三神合祭殿\n(出羽三山印)",
+    "history": "羽黒山・月山・湯殿山の三山を巡る「生まれ変わりの旅」の拠点。杉並木と国宝五重塔で有名。",
+    "gourmet": "名物：斎館の精進料理（ごま豆腐・山菜料理）＆二の坂茶屋の力餅",
+    "deity": "月読命・伊氏波神・志固男神",
+    "benefits": [
+      "現世利益",
+      "生まれ変わり",
+      "心願成就"
+    ],
+    "sanpaiTime": "開門 8:30〜17:00",
+    "enshrinedDeities": [
+      "月読命",
+      "伊氏波神",
+      "志固男神"
+    ],
+    "blessings": [
+      "現世利益",
+      "生まれ変わり",
+      "心願成就"
+    ],
+    "etiquetteNotes": "国宝五重塔と樹齢数百年の杉並木（2,446段の石段）を歩き、過去・現在・未来の三神を同時に拝する三神合祭殿へ参ります。",
+    "officialUrl": "http://www.dewasanzan.jp/"
+  },
+  {
+    "id": "HT-006",
+    "name": "初發神社",
+    "type": "神社",
+    "region": "北海道・東北",
+    "regionKey": "hokkaido_tohoku",
+    "prefecture": "福島県",
+    "location": "双葉郡浪江町",
+    "lat": 37.4939,
+    "lng": 141.0014,
+    "stampName": "相馬総鎮守\n(初發神社印)",
+    "history": "300年以上の歴史を刻む文化財の本殿を持ち、近年はライダーズ神社としても親しまれる。",
+    "gourmet": "名物：浪江焼そば＆請戸港の新鮮しらす丼",
+    "deity": "初發大神",
+    "benefits": [
+      "交通安全",
+      "開運招福",
+      "地域復興"
+    ],
+    "sanpaiTime": "境内参拝自由（授与所 9:00〜16:00）",
+    "enshrinedDeities": [
+      "初發大神"
+    ],
+    "blessings": [
+      "交通安全",
+      "開運招福",
+      "地域復興"
+    ],
+    "etiquetteNotes": "相馬野馬追ゆかりの古社。震災復興の象徴として再建された社殿にて静かに二礼二拍手一礼でお参りください。",
+    "officialUrl": "https://www.fukushima-jinjacho.or.jp/"
+  }
+]

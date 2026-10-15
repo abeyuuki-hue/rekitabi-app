@@ -3,27 +3,37 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const kantoPath = path.resolve('public/data/spots/kanto.json');
-const kansaiPath = path.resolve('public/data/spots/kansai.json');
+const REGIONS = [
+  'hokkaido_tohoku',
+  'kanto',
+  'chubu_hokuriku',
+  'kansai',
+  'chugoku',
+  'shikoku',
+  'kyushu_okinawa',
+  'all',
+];
 
-test('Spot data files exist and are valid JSON', () => {
-  assert.ok(fs.existsSync(kantoPath), 'kanto.json must exist');
-  assert.ok(fs.existsSync(kansaiPath), 'kansai.json must exist');
+test('All 7 region spot data files, all.json, and courses.json exist and are valid JSON', () => {
+  for (const region of REGIONS) {
+    const p = path.resolve(`public/data/spots/${region}.json`);
+    assert.ok(fs.existsSync(p), `${region}.json must exist`);
+    const data = JSON.parse(fs.readFileSync(p, 'utf-8'));
+    assert.ok(Array.isArray(data), `${region} data must be an array`);
+    assert.ok(data.length > 0, `${region} data should not be empty`);
+  }
 
-  const kantoData = JSON.parse(fs.readFileSync(kantoPath, 'utf-8'));
-  const kansaiData = JSON.parse(fs.readFileSync(kansaiPath, 'utf-8'));
-
-  assert.ok(Array.isArray(kantoData), 'kanto data must be an array');
-  assert.ok(Array.isArray(kansaiData), 'kansai data must be an array');
-  assert.ok(kantoData.length > 0, 'kanto data should not be empty');
-  assert.ok(kansaiData.length > 0, 'kansai data should not be empty');
+  const coursesPath = path.resolve('public/data/courses.json');
+  assert.ok(fs.existsSync(coursesPath), 'courses.json must exist');
+  const courses = JSON.parse(fs.readFileSync(coursesPath, 'utf-8'));
+  assert.equal(courses.length, 5, 'Should have 5 stamp rally courses');
 });
 
-test('Spot data entries have required fields and valid coordinates', () => {
-  const kantoData = JSON.parse(fs.readFileSync(kantoPath, 'utf-8'));
-  const kansaiData = JSON.parse(fs.readFileSync(kansaiPath, 'utf-8'));
+test('Spot data entries have required fields, unique IDs, and valid Japan coordinates', () => {
+  const allPath = path.resolve('public/data/spots/all.json');
+  const allSpots = JSON.parse(fs.readFileSync(allPath, 'utf-8'));
+  assert.ok(allSpots.length >= 49, `Expected at least 49 spots, got ${allSpots.length}`);
 
-  const allSpots = [...kantoData, ...kansaiData];
   const ids = new Set();
 
   for (const spot of allSpots) {
@@ -41,6 +51,16 @@ test('Spot data entries have required fields and valid coordinates', () => {
     assert.ok(spot.stampName, `Spot ${spot.id} must have a stampName`);
     assert.ok(spot.history, `Spot ${spot.id} must have a history`);
   }
+
+  // Verify all course spot_ids exist in all.json
+  const courses = JSON.parse(fs.readFileSync(path.resolve('public/data/courses.json'), 'utf-8'));
+  for (const course of courses) {
+    assert.ok(course.course_id, 'Course must have course_id');
+    assert.ok(course.title, 'Course must have title');
+    for (const sid of course.spot_ids) {
+      assert.ok(ids.has(sid), `Course ${course.course_id} references unknown spot_id ${sid}`);
+    }
+  }
 });
 
 test('Haversine distance calculation is accurate', () => {
@@ -56,15 +76,12 @@ test('Haversine distance calculation is accurate', () => {
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 
-  // Same point
   assert.equal(calculateDistance(35.6961, 139.9936, 35.6961, 139.9936), 0);
 
-  // Approximately 78m away
   const dClose = calculateDistance(35.6961, 139.9936, 35.6968, 139.9936);
   assert.ok(dClose > 50 && dClose < 150, `Expected ~78m, got ${dClose}`);
   assert.ok(dClose <= 500, 'Within 500m range for check-in');
 
-  // Tokyo to Kyoto (~370km)
   const dFar = calculateDistance(35.6895, 139.6917, 34.9858, 135.7588);
   assert.ok(dFar > 350000 && dFar < 400000, `Expected ~370km, got ${dFar}`);
   assert.ok(dFar > 500, 'Far point must exceed 500m check-in threshold');
@@ -76,7 +93,7 @@ test('Region key sanitization prevents path traversal', () => {
   }
 
   assert.equal(sanitizeRegion('kanto'), 'kanto');
-  assert.equal(sanitizeRegion('kansai'), 'kansai');
+  assert.equal(sanitizeRegion('hokkaido_tohoku'), 'hokkaido_tohoku');
   assert.equal(sanitizeRegion('../../../etc/passwd'), 'etcpasswd');
   assert.equal(sanitizeRegion('kanto/..'), 'kanto');
 });
